@@ -1,48 +1,38 @@
-drop table planeta;
-drop table planeta_editable;
-drop table sistema;
-drop table sistema_editable;
+use planetas;
 
-create table sistema (
-ID serial primary key,
-NOMBRE VARCHAR (50) not null unique,
-PLANETAS INT not null,
-PLANETAS_ENANOS integer not null,
-GALAXIA VARCHAR (50) not null
+create table planeta_editable (
+ID_PLANETA serial primary key,
+NOMBRE_SISTEMA VARCHAR (50) not null,
+NOMBRE_PLANETA varchar (50) not null unique,
+IMAGEN blob,
+DIAMETRO int not null,
+DIST_ESTRELLA int not null,
+SATELITES int not null,
+TIPO varchar (50) not null,
+MASA varchar (50) not null,
+ENANO BOOLEAN not null,
+VERIFICADO BOOLEAN null
 );
 
 create table planeta (
-ID serial primary key,
-SISTEMA_ID SERIAL not null,
-NOMBRE VARCHAR (50) not null unique,
-DIAMETRO INT not null,
-DIST_ESTRELLA INT not null,
-SATELITES INT not null,
-TIPO VARCHAR (50) not null,
-MASA INT not null,
+ID_PLANETA serial primary key,
+NOMBRE_SISTEMA VARCHAR (50) not null,
+NOMBRE_PLANETA varchar (50) not null unique,
+IMAGEN blob,
+DIAMETRO int not null,
+DIST_ESTRELLA int not null,
+SATELITES int not null,
+TIPO varchar (50) not null,
+MASA varchar (50) not null,
 ENANO int not null,
-VERIFICADO numeric default 1,
-FOREIGN KEY (SISTEMA_ID) REFERENCES sistema(ID) 
+VERIFICADO BOOLEAN NOT NULL
 );
 
-create table sistema_editable (
-ID serial primary key,
-NOMBRE VARCHAR (50) not null unique,
-PLANETAS INT not null,
-PLANETAS_ENANOS int not null,
-GALAXIA VARCHAR (50) not null
-);
+drop table planeta_editable;
+drop table planeta;
 
-create table planeta_editable (
-ID serial primary key,
-SISTEMA_ID SERIAL not null,
-NOMBRE VARCHAR (50) not null unique,
-DIAMETRO INT not null,
-DIST_ESTRELLA INT not null,
-SATELITES INT not null,
-TIPO VARCHAR (50) not null,
-MASA INT not null,
-ENANO int not null,
-VERIFICADO int default 0,
-FOREIGN KEY (SISTEMA_ID) REFERENCES sistema_editable(ID) 
-);
+select * from planeta_editable;
+
+
+
+
