@@ -28,10 +28,10 @@ public class FileUploadDBServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         // gets values of text fields
-        String ID = request.getParameter("id");
-        String SISTEMA_ID = request.getParameter("sistema_id");
+        String ID_PLANETA = request.getParameter("id_planeta");
+        String NOMBRE_SISTEMA = request.getParameter("nombre_sistema");
         String IMAGEN = request.getParameter("imagen");
-        String NOMBRE = request.getParameter("nombre");
+        String NOMBRE_PLANETA = request.getParameter("nombre_planeta");
         String DIAMETRO = request.getParameter("diametro");
         String DIST_ESTRELLA = request.getParameter("dist_estrella");
         String SATELITES = request.getParameter("satelites");
@@ -64,13 +64,13 @@ public class FileUploadDBServlet extends HttpServlet {
             conn = DriverManager.getConnection(url, user, password);
  
             // constructs SQL statement
-            String sql = "INSERT INTO planeta (ID, SISTEMA_ID, NOMBRE, DIAMETRO,"
-                    + "DIST_ESTRELLA, SATELITES, TIPO, MASA, ENANO, VERIFICADO,IMAGEN) "
+            String sql2 = "INSERT INTO planeta_editable (ID_PLANETA,NOMBRE_PLANETA, NOMBRE_SISTEMA, DIAMETRO,"
+                    + "DIST_ESTRELLA, SATELITES, TIPO, MASA, ENANO, VERIFICADO, IMAGEN) "
                     + "VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, ID);
-            statement.setString(2, SISTEMA_ID);
-            statement.setString(3, NOMBRE);
+            PreparedStatement statement = conn.prepareStatement(sql2);
+            statement.setString(1, ID_PLANETA);
+            statement.setString(2, NOMBRE_PLANETA);
+            statement.setString(3, NOMBRE_SISTEMA);
             statement.setString(4, DIAMETRO);
             statement.setString(5, DIST_ESTRELLA);
             statement.setString(6, SATELITES);
@@ -78,7 +78,6 @@ public class FileUploadDBServlet extends HttpServlet {
             statement.setString(8, MASA);
             statement.setString(9, ENANO);
             statement.setString(10, VERIFICADO);
-
           if (inputStream != null) {
                 // fetches input stream of the upload file for the blob column
                 statement.setBlob(11, inputStream);
