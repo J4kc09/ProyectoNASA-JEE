@@ -9,12 +9,18 @@ and open the template in the editor.
         <title>La Spanish NASA</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="estilos.css">
     </head>
     <body>
-        <h1>La Spanish NASA</h1>
-            <a href="http://localhost:8080/ProyectoNASA-JEE/Upload.jsp">
-                <button>Crear un planeta</button>
-            </a>
-        <div></div>
+        
+        <img src="https://karrasko.ddns.net/SNASA.png" width="670" height="222">
+        <form method="get" action="ConsultaPlanetaServlet">
+            <input type="text" placeholder="Escribe el nombre de un planeta..." name="consultaPlaneta" size="50"/>
+               <input type="submit" value="Buscar">
+        </form>
+        <a href="http://localhost:8080/ProyectoNASA-JEE_-_copia/Upload.jsp">
+            <button>Crea un planeta</button>
+        </a>
     </body>
 </html>

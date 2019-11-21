@@ -11,13 +11,16 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="estilos.css">
 <title>Nuevo Planeta</title>
 </head>
 <body>
+    <div>
     <center>
         <h1>Crea un planeta nuevo:</h1>
         <form method="post" action="uploadServlet" enctype="multipart/form-data">
-            <table border="0">
+            <table border="0" class="newplanet">
                 <tr>
                     <td>IMAGEN: </td>
                     <td><input type="file" name="imagen" size="50"/></td>
@@ -73,13 +76,13 @@
                         No<input type="radio" name="enano" value="0"/>
                     </td>   
                 </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" value="Guardar">
-                    </td>
-                </tr>
             </table>
+            <input type="submit" value="Guardar">
         </form>
-    </center>
+        <a href="http://localhost:8080/ProyectoNASA-JEE_-_copia/">
+            <button>Volver a inicio</button>
+        </a>
+    </div>    
+</center>    
 </body>
 </html>

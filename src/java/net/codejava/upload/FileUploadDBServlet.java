@@ -1,11 +1,9 @@
 package net.codejava.upload;
- 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import javax.ejb.EJB;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -14,17 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
- 
+import net.codejava.facade.PlanetaEditableFacade;
+import net.codejava.modelo.PlanetaEditable;
+import org.apache.commons.io.IOUtils;
+
 @WebServlet("/uploadServlet")
 @MultipartConfig(maxFileSize = 16177215)    // upload file's size up to 16MB
 public class FileUploadDBServlet extends HttpServlet {
-     
-    // database connection settings
-   private final String url = "jdbc:mysql://karrasko.ddns.net/planetas";
-    private final String user = "nasa";
-    private final String password = "nasanasa";
-    
-   @Override
+
+    @EJB
+    private PlanetaEditableFacade planetaEditableFacade;
+
+    @Override
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         // gets values of text fields
@@ -39,10 +38,10 @@ public class FileUploadDBServlet extends HttpServlet {
         String MASA = request.getParameter("masa");
         String ENANO = request.getParameter("enano");
         String VERIFICADO = request.getParameter("verificado");
-        
-         
+        String message = "¡El planeta se ha creado con éxito!";
+        try { 
         InputStream inputStream = null; // input stream of the upload file
-         
+
         // obtains the upload file part in this multipart request
         Part filePart = request.getPart("imagen");
         if (filePart != null) {
@@ -50,62 +49,31 @@ public class FileUploadDBServlet extends HttpServlet {
             System.out.println(filePart.getName());
             System.out.println(filePart.getSize());
             System.out.println(filePart.getContentType());
-             
+
             // obtains input stream of the upload file
             inputStream = filePart.getInputStream();
         }
-         
-        Connection conn = null; // connection to the database
-        String message = null;  // message will be sent back to client
-         
-        try {
-            // connects to the database
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-            conn = DriverManager.getConnection(url, user, password);
- 
-            // constructs SQL statement
-            String sql2 = "INSERT INTO planeta_editable (ID_PLANETA,NOMBRE_PLANETA, NOMBRE_SISTEMA, DIAMETRO,"
-                    + "DIST_ESTRELLA, SATELITES, TIPO, MASA, ENANO, VERIFICADO, IMAGEN) "
-                    + "VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-            PreparedStatement statement = conn.prepareStatement(sql2);
-            statement.setString(1, ID_PLANETA);
-            statement.setString(2, NOMBRE_PLANETA);
-            statement.setString(3, NOMBRE_SISTEMA);
-            statement.setString(4, DIAMETRO);
-            statement.setString(5, DIST_ESTRELLA);
-            statement.setString(6, SATELITES);
-            statement.setString(7, TIPO);
-            statement.setString(8, MASA);
-            statement.setString(9, ENANO);
-            statement.setString(10, VERIFICADO);
-          if (inputStream != null) {
-                // fetches input stream of the upload file for the blob column
-                statement.setBlob(11, inputStream);
-            }
- 
-            // sends the statement to the database server
-            int row = statement.executeUpdate();
-            if (row > 0) {
-                message = "File uploaded and saved into database";
-            }   
-            
-        } catch (SQLException ex) {
-            message = "ERROR: " + ex.getMessage();
-            ex.printStackTrace();
-        } finally {
-            if (conn != null) {
-                // closes the database connection
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            // sets the message in request scope
-            request.setAttribute("Message", message);
-             
-            // forwards to the message page
-            getServletContext().getRequestDispatcher("/Message.jsp").forward(request, response);
+
+
+        byte[] fileAsByteArray = IOUtils.toByteArray(inputStream);
+        
+        int diametro = (DIAMETRO !=null) ? Integer.parseInt(DIAMETRO):null;
+        int distEstrella = Integer.parseInt(DIST_ESTRELLA);
+        int satelites = Integer.parseInt(SATELITES);
+        boolean enano = Boolean.parseBoolean(ENANO);
+        
+        PlanetaEditable editable = new PlanetaEditable((long)500, NOMBRE_SISTEMA, NOMBRE_PLANETA, diametro, distEstrella, satelites, TIPO, MASA,enano);
+        editable.setImagen(fileAsByteArray);
+        
+        planetaEditableFacade.create(editable);
+        
+        // sets the message in request scope
+        }catch(Exception err) {
+            message = "ERROR: El planeta introducido ya existe o ha introducido caracteres erróneos.";
         }
+         request.setAttribute("Message", message);
+                
+        // forwards to the message page
+        getServletContext().getRequestDispatcher("/Message.jsp").forward(request, response);
     }
 }
